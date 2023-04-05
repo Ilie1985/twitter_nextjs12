@@ -15,7 +15,7 @@ import {
 
 const Sidebar = () => {
   return (
-    <div className=" sm:flex flex-col p-2 xl:items-start fixed h-full xl:ml-24">
+    <div className="hidden sm:flex flex-col p-2 xl:items-start fixed h-full xl:ml-24">
       {/* Twitter logo */}
       <div className="hoverEffect p-3 hover:bg-blue-100 xl:px-3">
         <Image
