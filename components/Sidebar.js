@@ -19,10 +19,10 @@ const Sidebar = () => {
       {/* Twitter logo */}
       <div className="hoverEffect p-3 hover:bg-blue-100 xl:px-3">
         <Image
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Twitter-logo.svg/1200px-Twitter-logo.svg.png"
+          src="https://cdn.cms-twdigitalassets.com/content/dam/help-twitter/twitter_logo_blue.png.twimg.768.png"
           alt="twitter logo"
-          width="30"
-          height="30"
+          width="50"
+          height="50"
         ></Image>
       </div>
       {/* Menu */}
