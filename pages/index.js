@@ -3,7 +3,23 @@ import Feed from "../components/Feed";
 import Sidebar from "../components/Sidebar";
 import Head from "next/head";
 
-export default function Home({ newsResults }) {
+
+export default function Home() {
+//   const [articles,setArticles] = useState([]);
+
+// useEffect(()=>{
+// const fetchData=async()=>{
+// const res=await fetch("https://saurav.tech/NewsAPI/top-headlines/category/business/us.json")
+// const data= await res.json()
+// setArticles(data.articles)
+// }
+
+
+// fetchData()
+// },[])
+
+// console.log(articles);
+
   return (
     <div>
       <Head>
@@ -19,7 +35,7 @@ export default function Home({ newsResults }) {
         {/* Feed */}
         <Feed />
         {/* Widgets */}
-        <Widgets newsResults={newsResults?.article} />
+        <Widgets />
         {/* Modal */}
       </main>
     </div>
@@ -27,14 +43,14 @@ export default function Home({ newsResults }) {
 }
 //https://saurav.tech/NewsAPI/top-headlines/category/business/us.json
 
-export async function getServerSideProps() {
-  const newsResults = await fetch(
-    "https://saurav.tech/NewsAPI/top-headlines/category/business/us.json"
-    ).then((res) => res.json());
-   
-  return {
-    props: {
-      newsResults,
-    },
-  };
-}
+// export async function getServerSideProps() {
+//   const newsResults = await fetch(
+//     "https://saurav.tech/NewsAPI/top-headlines/category/health/in.json"
+//     ).then((res) => res.json());
+
+//   return {
+//     props: {
+//       newsResults,
+//     },
+//   };
+// }
