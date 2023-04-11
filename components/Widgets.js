@@ -5,6 +5,7 @@ import News from "./News";
 
 const Widgets = () => {
   const [articles, setArticles] = useState([]);
+  const [articleNum, setArticleNum] = useState(4);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -30,12 +31,19 @@ const Widgets = () => {
           />
         </div>
       </div>
-      <div className="">
-        <h4>Whats Happening</h4>
-        {articles?.map((article) => {
+      <div className="text-gray-700 space-y-3 bg-gray-100 rounded-xl pt-2 w-[90%] xl:w-[75%]">
+        <h4 className="font-bold text-xl px-4">Whats Happening</h4>
+        {articles?.slice(0, articleNum).map((article) => {
           return <News key={article.title} article={article} />;
         })}
-        <button>Show more</button>
+        <button
+          className="text-blue-300 pl-4 pb-3 hover:text-blue-400"
+          onClick={() => {
+            return setArticleNum(articleNum + 4);
+          }}
+        >
+          Show more
+        </button>
       </div>
     </div>
   );
