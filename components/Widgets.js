@@ -27,7 +27,7 @@ const Widgets = () => {
         "https://randomuser.me/api/?results=50&inc=name,login,picture"
       );
       const data = await res.json();
-      console.log(data);
+   
       setUsers(data.results);
     };
 

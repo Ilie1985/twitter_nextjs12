@@ -3,22 +3,20 @@ import Feed from "../components/Feed";
 import Sidebar from "../components/Sidebar";
 import Head from "next/head";
 
-
 export default function Home() {
-//   const [articles,setArticles] = useState([]);
+  //   const [articles,setArticles] = useState([]);
 
-// useEffect(()=>{
-// const fetchData=async()=>{
-// const res=await fetch("https://saurav.tech/NewsAPI/top-headlines/category/business/us.json")
-// const data= await res.json()
-// setArticles(data.articles)
-// }
+  // useEffect(()=>{
+  // const fetchData=async()=>{
+  // const res=await fetch("https://saurav.tech/NewsAPI/top-headlines/category/business/us.json")
+  // const data= await res.json()
+  // setArticles(data.articles)
+  // }
 
+  // fetchData()
+  // },[])
 
-// fetchData()
-// },[])
-
-// console.log(articles);
+  // console.log(articles);
 
   return (
     <div>
