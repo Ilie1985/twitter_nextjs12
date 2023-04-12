@@ -5,7 +5,7 @@ import News from "./News";
 
 const Widgets = () => {
   const [users, setUsers] = useState([]);
-  const[usersNum,setUsersNum]=useState(3)
+  const [usersNum, setUsersNum] = useState(3);
   const [articles, setArticles] = useState([]);
   const [articleNum, setArticleNum] = useState(3);
 
@@ -27,7 +27,7 @@ const Widgets = () => {
         "https://randomuser.me/api/?results=50&inc=name,login,picture"
       );
       const data = await res.json();
-   
+
       setUsers(data.results);
     };
 
@@ -65,7 +65,10 @@ const Widgets = () => {
         <h4 className="font-bold text-xl px-4">Who to follow</h4>
         {users.slice(0, usersNum).map((user) => {
           return (
-            <div className="flex items-center px-4 py-2 cursor-pointer hover:bg-gray-200" key={user.login.username}>
+            <div
+              className="flex items-center px-4 py-2 cursor-pointer hover:bg-gray-200 transition duration-500 ease-out"
+              key={user.login.username}
+            >
               <img
                 src={user.picture.thumbnail}
                 alt="random-user"
@@ -73,16 +76,25 @@ const Widgets = () => {
                 width="40"
               />
               <div className="truncate ml-4 leading-5">
-                <h4 className="font-bold hover:underline text-[14px] truncate ">{user.login.username}</h4>
-                <h5 className="text-[13px] text-gray-500 truncate">{user.name.first + " " + user.name.last}</h5>
+                <h4 className="font-bold hover:underline text-[14px] truncate ">
+                  {user.login.username}
+                </h4>
+                <h5 className="text-[13px] text-gray-500 truncate">
+                  {user.name.first + " " + user.name.last}
+                </h5>
               </div>
-              <button className="ml-auto bg-black text-white rounded-full text-sm px-3.5 py-1.5 font-bold">Follow</button>
+              <button className="ml-auto bg-black text-white rounded-full text-sm px-3.5 py-1.5 font-bold">
+                Follow
+              </button>
             </div>
           );
         })}
-        <button className="text-blue-300 pl-4 pb-3 hover:text-blue-400" onClick={()=>{
-          return setUsersNum(usersNum + 3)
-        }}>
+        <button
+          className="text-blue-300 pl-4 pb-3 hover:text-blue-400"
+          onClick={() => {
+            return setUsersNum(usersNum + 3);
+          }}
+        >
           Show more
         </button>
       </div>

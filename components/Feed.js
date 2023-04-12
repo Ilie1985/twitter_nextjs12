@@ -28,6 +28,7 @@ const Feed = () => {
         </div>
       </div>
       <Input />
+
       {posts.map((post) => {
         return <Post key={post.id} post={post} />;
       })}
