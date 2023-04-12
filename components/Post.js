@@ -16,8 +16,9 @@ import {
   onSnapshot,
   setDoc,
 } from "firebase/firestore";
-import { db } from "../firebase";
+import { db, storage } from "../firebase";
 import { signIn, useSession } from "next-auth/react";
+import { deleteObject, ref } from "firebase/storage";
 
 const Post = ({ post }) => {
   const [likes, setLikes] = useState([]);
@@ -48,8 +49,15 @@ const Post = ({ post }) => {
           username: session.user.username,
         });
       }
-    }else{
-      signIn("/")
+    } else {
+      signIn("/");
+    }
+  };
+
+  const deletePost = async () => {
+    if (window.confirm("Are you sure you want to delete this post?")) {
+      deleteDoc(doc(db, "posts", post.id));
+      deleteObject(ref(storage, `posts/${post.id}/image`));
     }
   };
 
@@ -97,7 +105,13 @@ const Post = ({ post }) => {
         {/* Icons */}
         <div className="flex justify-between text-gray-500 p-2">
           <ChatIcon className="h-9 w-9 hoverEffect p-2 hover:text-sky-500 hover:bg-sky-100" />
-          <TrashIcon className="h-9 w-9 hoverEffect p-2 hover:text-red-600 hover:bg-red-100" />
+
+          {session?.user.uid === post?.data().id && (
+            <TrashIcon
+              className="h-9 w-9 hoverEffect p-2 hover:text-red-600 hover:bg-red-100"
+              onClick={deletePost}
+            />
+          )}
 
           <div className="flex items-center">
             {hasLikes ? (
