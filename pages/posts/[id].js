@@ -54,12 +54,12 @@ const PostPage = () => {
         <div className="xl:ml-[370px] border-l border-r border-gray-200 xl:min-w-[576px] sm:ml-[73px] flex-grow max-w-xl">
           <div className="flex items-center py-2 px-3 sticky top-0 z-50 bg-white border-b border-gray-200">
             <div
-              className="hoverEffect"
+              className="hoverEffect relative w-7 h-6"
               onClick={() => {
                 router.push("/");
               }}
             >
-              <ArrowLeftIcon className="h-5 ml-4 mt-4 sm:mt-4 sm:ml-4" />
+              <ArrowLeftIcon className="h-5 absolute top-1 left-1" />
             </div>
             <h2 className="text-lg sm:text-xl font-bold cursor-pointer sm:ml-2">
               Tweet
@@ -71,11 +71,14 @@ const PostPage = () => {
           {comments.length > 0 && (
             <div className="">
               {comments.map((comment) => {
-              return  <Comment
-                  key={comment.id}
-                  id={comment.id}
-                  comment={comment.data()}
-                />;
+                return (
+                  <Comment
+                    key={comment.id}
+                    commentId={comment.id}
+                    originalPostId={id}
+                    comment={comment.data()}
+                  />
+                );
               })}
             </div>
           )}

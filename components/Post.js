@@ -75,7 +75,7 @@ const Post = ({ post, id }) => {
       if (post.data().image) {
         deleteObject(ref(storage, `posts/${id}/image`));
       }
-      router.push("/")
+      router.push("/");
     }
   };
 
@@ -109,7 +109,12 @@ const Post = ({ post, id }) => {
         </div>
 
         {/* Post text */}
-        <p className="text-gray-800 text-[15px] sm:text-[16px] mb-2 ">
+        <p
+          className="text-gray-800 text-[15px] sm:text-[16px] mb-2 "
+          onClick={() => {
+            return router.push(`/posts/${id}`);
+          }}
+        >
           {post?.data()?.text}
         </p>
 
@@ -118,6 +123,9 @@ const Post = ({ post, id }) => {
           src={post?.data()?.image}
           alt="posted images"
           className="rounded-2xl mr-2"
+          onClick={() => {
+            return router.push(`/posts/${id}`);
+          }}
         />
 
         {/* Icons */}
