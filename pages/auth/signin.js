@@ -12,7 +12,7 @@ const Signin = ({ providers }) => {
       <div className="">
         {Object.values(providers).map((provider) => {
           return (
-            <div className="flex flex-col items-center">
+            <div key={provider.name} className="flex flex-col items-center">
               <img
                 className="w-36 object-cover "
                 src="https://cdn.cms-twdigitalassets.com/content/dam/help-twitter/twitter_logo_blue.png.twimg.768.png"
