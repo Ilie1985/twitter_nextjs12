@@ -6,16 +6,37 @@ import Head from "next/head";
 import CommentModal from "../../components/CommentModal";
 import { ArrowLeftIcon } from "@heroicons/react/outline";
 import Post from "../../components/Post";
-import { doc, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  onSnapshot,
+  orderBy,
+  query,
+} from "firebase/firestore";
 import { db } from "../../firebase";
+import Comment from "../../components/Comment";
 
 const PostPage = () => {
   const router = useRouter();
   const { id } = router.query;
   const [post, setPost] = useState(null);
+  const [comments, setComments] = useState([]);
 
+  //get the post data
   useEffect(() => {
     onSnapshot(doc(db, "posts", id), (snapshot) => setPost(snapshot));
+  }, [db, id]);
+
+  //get the comments of the post
+
+  useEffect(() => {
+    onSnapshot(
+      query(
+        collection(db, "posts", id, "comments"),
+        orderBy("timestamp", "desc")
+      ),
+      (snapshot) => setComments(snapshot.docs)
+    );
   }, [db, id]);
 
   return (
@@ -47,6 +68,17 @@ const PostPage = () => {
           </div>
 
           <Post id={id} post={post} />
+          {comments.length > 0 && (
+            <div className="">
+              {comments.map((comment) => {
+              return  <Comment
+                  key={comment.id}
+                  id={comment.id}
+                  comment={comment.data()}
+                />;
+              })}
+            </div>
+          )}
         </div>
         {/* Widgets */}
         <Widgets />
