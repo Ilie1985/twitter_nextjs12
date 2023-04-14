@@ -30,7 +30,7 @@ const Feed = () => {
       <Input />
 
       {posts.map((post) => {
-        return <Post key={post.id} post={post} />;
+        return <Post key={post.id} post={post} id={post.id} />;
       })}
     </div>
   );

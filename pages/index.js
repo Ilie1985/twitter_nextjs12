@@ -5,20 +5,6 @@ import Head from "next/head";
 import CommentModal from "../components/CommentModal";
 
 export default function Home() {
-  //   const [articles,setArticles] = useState([]);
-
-  // useEffect(()=>{
-  // const fetchData=async()=>{
-  // const res=await fetch("https://saurav.tech/NewsAPI/top-headlines/category/business/us.json")
-  // const data= await res.json()
-  // setArticles(data.articles)
-  // }
-
-  // fetchData()
-  // },[])
-
-  // console.log(articles);
-
   return (
     <div>
       <Head>
@@ -41,16 +27,3 @@ export default function Home() {
     </div>
   );
 }
-//https://saurav.tech/NewsAPI/top-headlines/category/business/us.json
-
-// export async function getServerSideProps() {
-//   const newsResults = await fetch(
-//     "https://saurav.tech/NewsAPI/top-headlines/category/health/in.json"
-//     ).then((res) => res.json());
-
-//   return {
-//     props: {
-//       newsResults,
-//     },
-//   };
-// }
