@@ -2,7 +2,7 @@ import Widgets from "../components/Widgets";
 import Feed from "../components/Feed";
 import Sidebar from "../components/Sidebar";
 import Head from "next/head";
-import Modal from "../components/Modal";
+import CommentModal from "../components/CommentModal";
 
 export default function Home() {
   //   const [articles,setArticles] = useState([]);
@@ -36,7 +36,7 @@ export default function Home() {
         {/* Widgets */}
         <Widgets />
         {/* Modal */}
-        <Modal />
+        <CommentModal />
       </main>
     </div>
   );
