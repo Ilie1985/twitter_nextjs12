@@ -4,7 +4,7 @@ import {
   PhotographIcon,
   XIcon,
 } from "@heroicons/react/outline";
-import { useSession, signOut } from "next-auth/react";
+
 import {
   addDoc,
   collection,
@@ -14,13 +14,17 @@ import {
 } from "firebase/firestore";
 import { db, storage } from "../firebase";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
+import { useRecoilState } from "recoil";
+import { userState } from "../atom/userAtom";
+import { signOut, getAuth } from "firebase/auth";
 
 const Input = () => {
-  const { data: session } = useSession();
   const [input, setInput] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const filePickerRef = useRef(null);
+  const [currentUser, setCurrentUser] = useRecoilState(userState);
+  const auth = getAuth();
 
   const sendPost = async () => {
     if (loading) {
@@ -29,12 +33,12 @@ const Input = () => {
     setLoading(true);
 
     const docRef = await addDoc(collection(db, "posts"), {
-      id: session.user.uid,
+      id: currentUser.uid,
       text: input,
-      userImg: session.user.image,
+      userImg: currentUser.userImg,
       timestamp: serverTimestamp(),
-      name: session.user.name,
-      username: session.user.username,
+      name: currentUser.name,
+      username: currentUser.username,
     });
 
     const imageRef = ref(storage, `posts/${docRef.id}/image`);
@@ -63,13 +67,18 @@ const Input = () => {
     };
   };
 
+  const onSignOut = () => {
+    signOut(auth);
+    setCurrentUser(null);
+  };
+
   return (
     <>
-      {session && (
+      {currentUser && (
         <div className="flex border-b border-gray-200 p-3 space-x-3">
           <img
-            onClick={signOut}
-            src={session?.user.image}
+            onClick={onSignOut}
+            src={currentUser?.userImg}
             alt="user-image"
             className="h-11 w-11 rounded-full cursor-pointer hover:brightness-95"
           />

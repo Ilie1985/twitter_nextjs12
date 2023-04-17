@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { modalState, postIdState } from "../atom/modalAtom";
+import { userState } from "../atom/userAtom";
 import Modal from "react-modal";
 import {
   EmojiHappyIcon,
@@ -16,15 +17,14 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import Moment from "react-moment";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 
 const CommentModal = () => {
   const [open, setOpen] = useRecoilState(modalState);
   const [postId, setPostId] = useRecoilState(postIdState);
+  const [currentUser, setCurrentUser] = useRecoilState(userState);
   const [post, setPost] = useState({});
   const [input, setInput] = useState("");
-  const { data: session } = useSession();
   const router = useRouter();
 
   useEffect(() => {
@@ -36,11 +36,11 @@ const CommentModal = () => {
   const sendComment = async () => {
     await addDoc(collection(db, "posts", postId, "comments"), {
       comment: input,
-      name: session.user.name,
-      username: session.user.username,
-      userImg: session.user.image,
+      name: currentUser.name,
+      username: currentUser.username,
+      userImg: currentUser.userImg,
       timestamp: serverTimestamp(),
-      userId: session.user.uid,
+      userId: currentUser.uid,
     });
 
     setOpen(false);
@@ -95,7 +95,7 @@ const CommentModal = () => {
 
             <div className="flex p-3 space-x-3">
               <img
-                src={session?.user.image}
+                src={currentUser?.userImg}
                 alt="user-image"
                 className="h-11 w-11 rounded-full cursor-pointer hover:brightness-95"
               />
@@ -114,20 +114,8 @@ const CommentModal = () => {
 
                 <div className="flex items-center justify-between pt-2.5 ">
                   <div className="flex ">
-                    <div
-                      className=""
-                      // onClick={() => {
-                      //   return filePickerRef.current.click();
-                      // }}
-                    >
+                    <div className="">
                       <PhotographIcon className="h-8 w-8 hoverEffect p-2 text-sky-500 hover:bg-sky-100" />
-
-                      {/* <input
-                        type="file"
-                        hidden
-                        ref={filePickerRef}
-                        onChange={addImage}
-                      /> */}
                     </div>
                     <EmojiHappyIcon className="h-8 w-8 hoverEffect p-2 text-sky-500 hover:bg-sky-100" />
                   </div>

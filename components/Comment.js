@@ -17,18 +17,17 @@ import {
   setDoc,
 } from "firebase/firestore";
 import { db, storage } from "../firebase";
-import { signIn, useSession } from "next-auth/react";
 import { deleteObject, ref } from "firebase/storage";
 import { useRecoilState } from "recoil";
 import { modalState } from "../atom/modalAtom";
 import { postIdState } from "../atom/modalAtom";
+import { userState } from "../atom/userAtom";
 import { useRouter } from "next/router";
 
 const Comment = ({ comment, commentId, originalPostId }) => {
   const [likes, setLikes] = useState([]);
-
+  const [currentUser, setCurrentUser] = useRecoilState(userState);
   const [hasLikes, setHasLikes] = useState(false);
-  const { data: session } = useSession();
   const [open, setOpen] = useRecoilState(modalState);
   const [postId, setPostId] = useRecoilState(postIdState);
   const router = useRouter();
@@ -43,13 +42,13 @@ const Comment = ({ comment, commentId, originalPostId }) => {
   useEffect(() => {
     setHasLikes(
       likes.findIndex((like) => {
-        return like.id === session?.user.uid;
+        return like.id === currentUser.uid;
       }) !== -1
     );
-  }, [likes]);
+  }, [likes, currentUser]);
 
   const likeComment = async () => {
-    if (session) {
+    if (currentUser) {
       if (hasLikes) {
         await deleteDoc(
           doc(
@@ -59,7 +58,7 @@ const Comment = ({ comment, commentId, originalPostId }) => {
             "comments",
             commentId,
             "likes",
-            session?.user.uid
+            currentUser?.uid
           )
         );
       } else {
@@ -71,15 +70,15 @@ const Comment = ({ comment, commentId, originalPostId }) => {
             "comments",
             commentId,
             "likes",
-            session?.user.uid
+            currentUser?.uid
           ),
           {
-            username: session.user.username,
+            username: currentUser?.username,
           }
         );
       }
     } else {
-      signIn("/");
+      router.push("/auth/signin");
     }
   };
 
@@ -128,8 +127,8 @@ const Comment = ({ comment, commentId, originalPostId }) => {
           <div className="flex items-center select-none">
             <ChatIcon
               onClick={() => {
-                if (!session) {
-                  signIn();
+                if (!currentUser) {
+                  router.push("/auth/signin");
                 } else {
                   setPostId(originalPostId);
                   setOpen(!open);
@@ -139,7 +138,7 @@ const Comment = ({ comment, commentId, originalPostId }) => {
             />
           </div>
 
-          {session?.user.uid === comment?.userId && (
+          {currentUser?.uid === comment?.userId && (
             <TrashIcon
               className="h-9 w-9 hoverEffect p-2 hover:text-red-600 hover:bg-red-100"
               onClick={deleteComment}

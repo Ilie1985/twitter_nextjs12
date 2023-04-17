@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React from "react";
+import React, { useEffect } from "react";
 import SidebarMenuItem from "./SidebarMenuItem";
 import { HomeIcon } from "@heroicons/react/solid";
 import {
@@ -12,10 +12,38 @@ import {
   InboxIcon,
   UserIcon,
 } from "@heroicons/react/outline";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebase";
+import { useRecoilState } from "recoil";
+import { userState } from "../atom/userAtom";
+import { useRouter } from "next/router";
 
 const Sidebar = () => {
-  const { data: session } = useSession();
+  const [currentUser, setCurrentUser] = useRecoilState(userState);
+  const auth = getAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const fetchUser = async () => {
+          const docRef = doc(db, "users", auth.currentUser.providerData[0].uid);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            setCurrentUser(docSnap.data());
+          }
+        };
+        fetchUser();
+      }
+    });
+  }, []);
+
+  const onSignOut = () => {
+    signOut(auth);
+    setCurrentUser(null);
+  };
+
   return (
     <div className="hidden sm:flex flex-col p-2 xl:items-start fixed h-full xl:ml-24">
       {/* Twitter logo */}
@@ -32,7 +60,7 @@ const Sidebar = () => {
         <SidebarMenuItem text="Home" Icon={HomeIcon} active />
         <SidebarMenuItem text="Explore" Icon={HashtagIcon} />
 
-        {session && (
+        {currentUser && (
           <>
             <SidebarMenuItem text="Notifications" Icon={BellIcon} />
             <SidebarMenuItem text="Messages" Icon={InboxIcon} />
@@ -46,7 +74,7 @@ const Sidebar = () => {
 
       {/* Button */}
 
-      {session ? (
+      {currentUser ? (
         <>
           <button className="bg-blue-400 text-white rounded-full w-56 h-12 font-bold shadow-md hover:brightness-95 text-lg hidden xl:inline">
             Tweet
@@ -55,14 +83,14 @@ const Sidebar = () => {
           {/*Mini-profile */}
           <div className="hoverEffect text-gray-700 flex items-center justify-center xl:justify-start mt-auto ">
             <img
-              onClick={signOut}
-              src={session.user.image}
+              onClick={onSignOut}
+              src={currentUser?.userImg}
               alt="user-image"
               className="  h-10 w-10 rounded-full xl:mr-2 "
             />
             <div className="leading-5 hidden xl:inline">
-              <h4 className="font-bold ">{session.user.name}</h4>
-              <p className="text-gray-500 s">@{session.user.username}</p>
+              <h4 className="font-bold ">{currentUser?.name}</h4>
+              <p className="text-gray-500 s">@{currentUser?.username}</p>
             </div>
             <DotsHorizontalIcon className="h-5 xl:ml-8 hidden xl:inline" />
           </div>
@@ -70,7 +98,9 @@ const Sidebar = () => {
       ) : (
         <button
           className="bg-blue-400 text-white rounded-full w-36 h-12 font-bold shadow-md hover:brightness-95 text-lg hidden xl:inline"
-          onClick={signIn}
+          onClick={() => {
+            return router.push("/auth/signin");
+          }}
         >
           Sign in
         </button>

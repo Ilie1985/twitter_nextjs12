@@ -17,20 +17,20 @@ import {
   setDoc,
 } from "firebase/firestore";
 import { db, storage } from "../firebase";
-import { signIn, useSession } from "next-auth/react";
 import { deleteObject, ref } from "firebase/storage";
 import { useRecoilState } from "recoil";
 import { modalState } from "../atom/modalAtom";
 import { postIdState } from "../atom/modalAtom";
+import { userState } from "../atom/userAtom";
 import { useRouter } from "next/router";
 
 const Post = ({ post, id }) => {
   const [likes, setLikes] = useState([]);
   const [comments, setComments] = useState([]);
   const [hasLikes, setHasLikes] = useState(false);
-  const { data: session } = useSession();
   const [open, setOpen] = useRecoilState(modalState);
   const [postId, setPostId] = useRecoilState(postIdState);
+  const [currentUser, setCurrentUser] = useRecoilState(userState);
   const router = useRouter();
 
   useEffect(() => {
@@ -50,22 +50,22 @@ const Post = ({ post, id }) => {
   useEffect(() => {
     setHasLikes(
       likes.findIndex((like) => {
-        return like.id === session?.user.uid;
+        return like.id === currentUser?.uid;
       }) !== -1
     );
-  }, [likes]);
+  }, [likes, currentUser]);
 
   const likePost = async () => {
-    if (session) {
+    if (currentUser) {
       if (hasLikes) {
-        await deleteDoc(doc(db, "posts", id, "likes", session?.user.uid));
+        await deleteDoc(doc(db, "posts", id, "likes", currentUser?.uid));
       } else {
-        await setDoc(doc(db, "posts", id, "likes", session?.user.uid), {
-          username: session.user.username,
+        await setDoc(doc(db, "posts", id, "likes", currentUser?.uid), {
+          username: currentUser?.username,
         });
       }
     } else {
-      signIn("/");
+      router.push("/auth/signin");
     }
   };
 
@@ -133,8 +133,9 @@ const Post = ({ post, id }) => {
           <div className="flex items-center select-none">
             <ChatIcon
               onClick={() => {
-                if (!session) {
-                  signIn();
+                if (!currentUser) {
+                  // signIn();
+                  router.push("/auth/signin");
                 } else {
                   setPostId(id);
                   setOpen(!open);
@@ -148,7 +149,7 @@ const Post = ({ post, id }) => {
             )}
           </div>
 
-          {session?.user.uid === post?.data()?.id && (
+          {currentUser?.uid === post?.data()?.id && (
             <TrashIcon
               className="h-9 w-9 hoverEffect p-2 hover:text-red-600 hover:bg-red-100"
               onClick={deletePost}
